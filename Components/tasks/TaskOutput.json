@@ -1,0 +1,90 @@
+{
+  "name": "TaskOutput",
+  "type": "object",
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Reference to the DailyTask"
+    },
+    "output_type": {
+      "type": "string",
+      "enum": [
+        "text",
+        "email",
+        "social_post",
+        "image",
+        "hashtags",
+        "analytics",
+        "multiple_options"
+      ],
+      "description": "Type of output generated"
+    },
+    "content": {
+      "type": "string",
+      "description": "Main content/output"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata (JSON object for flexibility)",
+      "properties": {
+        "subject": {
+          "type": "string"
+        },
+        "platform": {
+          "type": "string"
+        },
+        "image_url": {
+          "type": "string"
+        },
+        "options": {
+          "type": "array"
+        },
+        "categories": {
+          "type": "object"
+        },
+        "metrics": {
+          "type": "object"
+        }
+      }
+    },
+    "agent_used": {
+      "type": "string",
+      "description": "Which AI agent generated this"
+    },
+    "quality_rating": {
+      "type": "number",
+      "description": "User rating 1-5"
+    },
+    "used_in_production": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this output was actually used"
+    },
+    "published_to": {
+      "type": "string",
+      "description": "Where it was published (if applicable)"
+    },
+    "published_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When it was published"
+    },
+    "is_favorite": {
+      "type": "boolean",
+      "default": false,
+      "description": "Marked as favorite"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Custom tags for organization"
+    }
+  },
+  "required": [
+    "task_id",
+    "output_type",
+    "content"
+  ]
+}

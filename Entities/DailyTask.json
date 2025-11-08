@@ -1,0 +1,89 @@
+{
+    "name": "DailyTask",
+    "type": "object",
+    "properties": {
+      "task_description": {
+        "type": "string",
+        "description": "The task description"
+      },
+      "task_date": {
+        "type": "string",
+        "format": "date",
+        "description": "Date for this task"
+      },
+      "category": {
+        "type": "string",
+        "description": "Task category (e.g., Content Creation, Marketing)"
+      },
+      "suggested_agent": {
+        "type": "string",
+        "description": "Suggested AI agent for this task"
+      },
+      "agent_page": {
+        "type": "string",
+        "description": "Page name of the suggested agent"
+      },
+      "status": {
+        "type": "string",
+        "enum": [
+          "pending",
+          "in_progress",
+          "completed",
+          "cancelled"
+        ],
+        "default": "pending",
+        "description": "Task status"
+      },
+      "priority": {
+        "type": "string",
+        "enum": [
+          "low",
+          "medium",
+          "high",
+          "urgent"
+        ],
+        "default": "medium",
+        "description": "Task priority"
+      },
+      "time_estimate": {
+        "type": "string",
+        "description": "Estimated time to complete (e.g., 30 mins, 1 hour)"
+      },
+      "actual_time": {
+        "type": "string",
+        "description": "Actual time taken"
+      },
+      "agent_used": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether AI agent was used"
+      },
+      "completion_date": {
+        "type": "string",
+        "format": "date-time",
+        "description": "When task was completed"
+      },
+      "notes": {
+        "type": "string",
+        "description": "Additional notes"
+      },
+      "output_quality": {
+        "type": "number",
+        "description": "Quality rating 1-5"
+      },
+      "has_output": {
+        "type": "boolean",
+        "default": false,
+        "description": "Whether output has been generated"
+      },
+      "output_count": {
+        "type": "number",
+        "default": 0,
+        "description": "Number of outputs generated"
+      }
+    },
+    "required": [
+      "task_description",
+      "task_date"
+    ]
+  }

@@ -243,7 +243,37 @@ export default function OutputLibrary() {
   };
 
   const openEditDialog = async (output) => {
-    alert("Editing and refining is not implemented in this version.");
+    setCurrentActionOutput(output);
+    setCurrentVersion(output);
+    
+    // Load version history (all outputs from the same task)
+    const allOutputs = JSON.parse(localStorage.getItem("taskOutputs") || "[]");
+    let relatedOutputs = allOutputs.filter(o => o.task_id === output.task_id);
+
+    // Enrich with created_date
+    relatedOutputs = relatedOutputs.map(o => {
+      const task = tasks.find(t => t.id === o.task_id);
+      return {
+        ...o,
+        created_date: task ? task.task_date : new Date().toISOString(),
+      }
+    });
+
+    relatedOutputs.sort((a, b) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime());
+
+    setVersionHistory(relatedOutputs);
+    
+    // Initialize chat with the original content
+    setEditMessages([
+      {
+        role: "assistant",
+        content: output.content,
+        timestamp: new Date(output.created_date),
+        version: relatedOutputs.findIndex(o => o.id === output.id) + 1
+      }
+    ]);
+    
+    setEditDialogOpen(true);
   };
 
   const handleRefineOutput = async () => {
@@ -251,7 +281,17 @@ export default function OutputLibrary() {
   };
 
   const selectVersion = (output) => {
-    alert("Version switching is not implemented in this version.");
+    setCurrentVersion(output);
+    setEditMessages(prev => [...prev, {
+      role: "system",
+      content: `Switched to Version ${versionHistory.findIndex(o => o.id === output.id) + 1}`,
+      timestamp: new Date()
+    }, {
+      role: "assistant",
+      content: output.content,
+      timestamp: new Date(output.created_date),
+      version: versionHistory.findIndex(o => o.id === output.id) + 1
+    }]);
   };
 
   const openActionDialog = (output, dialogType) => {
@@ -459,15 +499,19 @@ export default function OutputLibrary() {
             <h3 className="text-lg font-semibold text-slate-900">
               {filteredOutputs.length} Outputs
             </h3>
-            <Button
-              variant="outline"
-              size="sm"
+            <div
+              role="button"
+              tabIndex={0}
               onClick={selectAll}
-              className="gap-2"
+              onKeyDown={(e) => e.key === 'Enter' && selectAll()}
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 gap-2 cursor-pointer"
             >
-              <Checkbox checked={selectedOutputs.length === filteredOutputs.length && filteredOutputs.length > 0} />
+              <Checkbox
+                checked={selectedOutputs.length === filteredOutputs.length && filteredOutputs.length > 0}
+                className="pointer-events-none"
+              />
               Select All
-            </Button>
+            </div>
           </div>
 
           {isLoading ? (
